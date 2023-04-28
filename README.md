@@ -14,8 +14,8 @@ e-Learning Application
 # Features to implement
 ✅1) User Authentication and Authorization (separate Teachers and Students)
 
-❌2) Posting contents (Notes, Question papers/banks, Syllabus, Mock Tests)
+✅2) Posting contents (Notes, Question papers/banks, Syllabus, Mock Tests)
 
-❌3) Dashboard (profile info [email, name, profile pic], notifications, progress tracking, recommendations, settings[change        profile info])
+✅3) Dashboard
 
 ❌4) Search and Filter (search for content by keywords)
