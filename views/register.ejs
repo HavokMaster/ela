@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="css/style.css">
+  <title>Registration Form</title>
+</head>
+<body>
+  <h1>Registration Form</h1>
+  <form action="/register" method="post">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required>
+    
+    <label for="enrollmentNo">Enrollment Number:</label>
+    <input type="text" id="enrollmentNo" name="enrollmentNo" required pattern="[0-9]{12}" title="Enrollment number must be 12 digits long">
+  
+    <label for="semester">Semester:</label>
+    <select id="semester" name="semester" required>
+      <option value="">Select Semester</option>
+      <option value="1">1st Semester</option>
+      <option value="2">2nd Semester</option>
+      <option value="3">3rd Semester</option>
+      <option value="4">4th Semester</option>
+      <option value="5">5th Semester</option>
+      <option value="6">6th Semester</option>
+      <option value="7">7th Semester</option>
+      <option value="8">8th Semester</option>
+    </select>
+  
+    <label for="branch">Branch:</label>
+    <select id="branch" name="branch" required>
+      <option value="">Select Branch</option>
+      <option value="cse">Computer Science Engineering</option>
+      <option value="it">Information Technology</option>
+    </select>
+  
+    <label for="userType">User Type:</label>
+    <select id="userType" name="userType" required>
+      <option value="">-- Select User Type --</option>
+      <option value="student">Student</option>
+      <option value="admin">Admin</option>
+    </select>
+    
+    <label for="password">Password (8-10 characters):</label>
+    <input type="password" id="password" name="password" pattern=".{8,10}" required>
+    
+    <label for="confirm-password">Confirm Password:</label>
+    <input type="password" id="confirm-password" name="confirm-password" required>
+    
+    <button type="button" id="toggle-password">Show password</button>
+    <br><br>
+    <input type="submit" value="Register">
+  </form>
+  <script src="js/validate.js"></script>
+  
+</body>
+</html>
