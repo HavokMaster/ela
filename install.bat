@@ -1,7 +1,8 @@
 mkdir uploads
-mkdir uploads/notes
-mkdir uploads/question-paper
-mkdir uploads/question-bank
-mkdir uploads/mocktest
-
+cd uploads
+mkdir notes
+mkdir question-paper
+mkdir question-bank
+mkdir mocktest
+cd ..
 npm install
