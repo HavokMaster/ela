@@ -17,5 +17,3 @@ e-Learning Application
 ✅2) Posting contents (Notes, Question papers/banks, Syllabus, Mock Tests)
 
 ✅3) Dashboard
-
-❌4) Search and Filter (search for content by keywords)
