@@ -2,17 +2,17 @@
 
 /* Body styles */
 body {
-  font-family: Arial, sans-serif;
+  font-family: Poppins;
   margin: 0;
   padding: 0;
-  background-color: #1b1c1d;
-  color: #fff;
+  background-color: #0B0C10 ;
+  color: #D0E1F9;
 }
 
 /* Form styles */
 form {
-  background-color: #26282a;
-  border-radius: 5px;
+  background-color: #D0E1F9 ;
+  border-radius: 20px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
   padding: 20px;
   margin: 20px auto;
@@ -20,39 +20,39 @@ form {
 }
 
 form label {
+
+  color: #0B0C10;
   display: block;
-  margin-bottom: 10px;
+  font-size: 18px;
+  padding-left: 10px;
+  margin-bottom: 4px;
   font-weight: bold;
-  text-align: center;
+  text-align: left;
+  
 }
 
 form input[type="text"],
+
 form input[type="password"],
 form select {
+  
   width: 100%;
   padding: 10px;
-  border: 1px solid #444;
-  border-radius: 5px;
+  /* border: 1px solid #444; */
+  border-radius: 20px;
   margin-bottom: 20px;
   box-sizing: border-box;
-  font-size: 16px;
-  color: #fff;
-  background-color: #444;
+  font-size: 14px;
+  color: #D0E1F9;
+  background-color: #0B0C10;
+
 }
 
 form select option {
-  font-size: 16px;
+  padding-top: 8px;
+  font-size: 14px;
 }
 
-form button {
-  background-color: #4CAF50;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-}
 
 form button:hover {
   background-color: #3e8e41;
@@ -60,15 +60,22 @@ form button:hover {
 
 /* Status message styles */
 .status-message {
-  background-color: #26282a;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  color: #D0E1F9;
+  background-color: none;
   padding: 20px;
   margin: 20px auto;
   max-width: 500px;
   text-align: center;
   font-size: 18px;
 }
+.page-title{
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 500px;
+  text-align: center;
+  font-size: 28px;
+}
+
 
 .status-message.success {
   color: #4CAF50;
@@ -76,4 +83,48 @@ form button:hover {
 
 .status-message.error {
   color: #f44336;
+}
+#submit-button{
+  display: flex;  
+  justify-content: center;  
+  align-items: center; 
+  
+}
+.submit-button{
+
+  margin-top: 8px;
+  background-color: #D0E1F9; 
+  border: 3px solid #0B0C10;
+  border-radius: 20px;
+  color: #000000;
+  padding: 10px 96px;
+  text-align: center;
+  font-weight: bold;
+  text-decoration: none;
+  font-size: 18px;
+
+}
+.submit-button:hover {
+  
+  color: #D0E1F9;
+  background-color: #0B0C10;
+}
+
+
+.password-container{
+  width: 100%;
+  position: relative;
+}
+.password-container input[type="password"],
+.password-container input[type="text"]{
+  width: 100%;
+  padding: 12px 36px 12px 12px;
+  box-sizing: border-box;
+}
+.fa-eye{
+  position: absolute;
+  top: 45px;
+  right: 4%;
+  cursor: pointer;
+  color: #D0E1F9;
 }
