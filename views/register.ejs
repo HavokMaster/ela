@@ -2,10 +2,11 @@
 <html>
 <head>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
   <title>Registration Form</title>
 </head>
 <body>
-  <h1 class="status-message">Registration Form</h1>
+  <h1 class="page-title">Registration</h1>
   <form action="/register" method="post">
     <label for="name">Name:</label>
     <input type="text" id="name" name="name" required>
@@ -40,15 +41,22 @@
       <option value="admin">Admin</option>
     </select>
     
-    <label for="password">Password (8-10 characters):</label>
-    <input type="password" id="password" name="password" pattern=".{8,10}" required>
+    <div class="password-container">
+      <label for="password">Password (8-10 characters):</label>
+      <input type="password" id="password" name="password" pattern=".{8,10}" required>
+      <i class="fa-solid fa-eye" id="eye"></i>
+    </div>
+  
     
     <label for="confirm-password">Confirm Password:</label>
     <input type="password" id="confirm-password" name="confirm-password" required>
+  
     
-    <button type="button" id="toggle-password">Show password</button>
-    <br><br>
-    <input type="submit" value="Register">
+    <!-- <button type="button" id="toggle-password">Show password</button> -->
+    <div id="submit-button">
+      <input type="submit" class="submit-button" value="Register">
+    </div>
+    
   </form>
   <script src="js/validate.js"></script>
   

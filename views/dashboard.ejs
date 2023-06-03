@@ -7,37 +7,53 @@
       body {
         margin: 0;
         font-family: Arial, Helvetica, sans-serif;
+        background-color: #F6F6F6;
       }
 
       .header {
-        background-color: #333;
-        color: white;
+        background-color: #142580  ;
+        color: #F6F6F6;
         padding: 10px;
         text-align: center;
       }
 
       .nav {
         display: flex;
-        background-color: #f1f1f1;
+        justify-content: space-between;
+        background-color: #142580;
+        border-radius: 0px 0px 20px 20px;
         overflow: hidden;
       }
 
+      .nav conatant{
+        float: right;
+      }
+
+      .nav p{
+        font-size: 18px;
+        padding-left: 20px;
+        text-align: center;
+        color: #f6f6f6;
+        text-decoration: none;
+      }
       .nav a {
+        border-radius: 20px;
         float: left;
-        color: #333;
+        color: #66FCF1;
         text-align: center;
         padding: 14px 16px;
         text-decoration: none;
       }
 
       .nav a:hover {
-        background-color: #ddd;
-        color: black;
+        
+        background-color: #051336;
+        color: #f6f6f6;
       }
 
       .nav a.active {
-        background-color: #4caf50;
-        color: white;
+        background-color: #66FCF1;
+        color: #051336;
       }
 
       .main {
@@ -45,53 +61,134 @@
       }
 
       .card {
-        background-color: #f1f1f1;
+        background-color: #142580;
         padding: 20px;
-        margin-top: 20px;
+        margin-top: -2px;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-        border-radius: 5px;
+        border-radius: 0px 20px 20px 20px;
       }
 
       .card h2 {
         font-size: 24px;
         margin-bottom: 10px;
+        color: #F6F6F6;
       }
 
       .card p {
         margin-bottom: 10px;
+        color: #F6F6F6;
       }
+
+      .card_title{
+        margin-top: 10px;
+        background-color:#142580;
+        color: #BDEA09;
+        max-width: fit-content;
+        padding-top: 4px;
+        padding-bottom: 4px;
+        padding-left: 16px;
+        padding-right: 16px;
+        border-radius: 20px 20px 0px 0px;
+      }
+
+      .subpart_title{
+        font-size: 20px;
+        color: #66FCF1;
+
+        
+      }
+
+
     </style>
   </head>
   <body>
     <div class="header">
-      <h1>Welcome to Dashboard</h1>
+      <h1>e-Learning Web Application</h1>
     </div>
 
     <div class="nav">
-      <a href="#" class="active">Home</a>
-      <% if (user.userType == "admin") { %>
-      <a href="/upload">Upload File</a>
-      <%}%>
-      <a href="/view-notes/<%= user.semester %>">View Notes</a>
-      <a href="/view-questionpapers/<%= user.semester %>">View Question Papers</a>
-      <a href="/view-questionbank/<%= user.semester %>">View Question Banks</a>
-      <a href="/logout" style="float:right">Logout</a>
+      <div class="logo_nav">
+        <p>Welcome <span style="color: #66FCF1; font-weight: bold;"><%= user.name %></span>!</p>
+      </div>
+      <div class="contant">
+        <a href="#" class="active">Home</a>
+
+        <% if (user.userType == "admin") { %>
+        <a href="/upload">Upload File</a>
+        <%}%>
+
+        <a href="/view-notes/<%= user.semester %>">View Notes</a>
+        <a href="/view-questionpapers/<%= user.semester %>">View Question Papers</a>
+        <a href="/view-questionbank/<%= user.semester %>">View Question Banks</a>
+        <a href="/logout" style="float:right">Logout</a>
+      </div>
+      
     </div>
 
     <div class="main">
-      <h2>User Details</h2>
-
-      <% if (user) { %>
-      <div class="card">
-        <h2><%= user.name %></h2>
-        <p><strong>Enrollment No.:</strong> <%= user.enrollmentNo %></p>
-        <p><strong>Semester:</strong> <%= user.semester %></p>
-        <p><strong>Branch:</strong> <%= user.branch %></p>
-        <p><strong>User Type:</strong> <%= user.userType %></p>
+      <div class="card1">
+        <div class="card_title">
+          <% if (user.userType != "admin") { %>
+            <h2>Student Details</h2>
+            <%}%>
+          
+          <% if (user.userType == "admin") { %>
+            <h2>Faculty Details</h2>
+            <%}%>
+        </div>
+        
+  
+        <% if (user) { %>
+        <div class="card">
+          <h2><%= user.name %></h2>
+          <% if (user.userType == "admin") { %>
+            <p><strong>Faculty ID: </strong> <%= user.enrollmentNo %></p>
+          <%}%>
+          <% if (user.userType != "admin") { %>
+            <p><strong>Enrollment No: </strong> <%= user.enrollmentNo %></p>
+          <%}%>
+          <p><strong>Semester: </strong> <%= user.semester %></p>
+          <p><strong>Branch: </strong> <%= user.branch %></p>
+          <p><strong>User Type: </strong> <%= user.userType %></p>
+        </div>
+        <% } else { %>
+        <p>No user details found.</p>
+        <% } %>
       </div>
-      <% } else { %>
-      <p>No user details found.</p>
-      <% } %>
+
+
+      <div class="card2" style="margin-top: 40px;">
+        <div class="card_title">
+            <h2>News & Events</h2>
+        </div>
+        
+  
+        <% if (user) { %>
+        <div class="card">
+          <div class="subpart">
+            <h3 class="subpart_title">NLJ Day Celebration</h3>
+            <p style="max-width: 80%;"> You are cordially invited to join us in a day of celebration at [College Name]. We are organizing a special event filled with fun, laughter, and unforgettable experiences. This is an opportunity for our college community to come together, celebrate our achievements, and create cherished memories. Join us on [Date] at [Venue] as we embark on a day of joy and camaraderie. We look forward to your presence and participation in this exciting celebration.</p>
+            <p><strong>Date: 20 to 27 Jun 2023</strong></p>
+            <p><strong>Venue: NLJIET Campus</strong></p>
+          </div>
+
+          <div class="subpart" style="margin-top: 40px;">
+            <h3 class="subpart_title">NLJ Hackathon</h3>
+            <p style="max-width: 80%;"> Hello Students, We are thrilled to announce the highly anticipated NLJIET Hackathon 2023, and we cordially invite you to participate in this exciting event! As one of the most prestigious hackathons in the region, it presents an excellent opportunity for students like you to showcase your technical skills, collaborate with peers, and tackle real-world challenges.</p>
+            <p><strong>Date: 15th Jul 2023</strong></p>
+            <p><strong>Venue: Auditorium Hall</strong></p>
+          </div>
+          
+        </div>
+        <% } else { %>
+        <p>No user details found.</p>
+        <% } %>
+
+      </div>
+      
+
+
     </div>
+    <!-- main end -->
   </body>
 </html>

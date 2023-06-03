@@ -2,10 +2,11 @@
 <html>
   <head>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <title>Login Page</title>
   </head>
   <body>
-    <h1 class="status-message">Login Page</h1>
+    <h1 class="page-title">Login Now</h1>
     <% if (locals.msg) { %>
       <div class="status-message error"><%= locals.msg %></div>
     <% } %>
@@ -18,33 +19,23 @@
       <label for="enrollmentNo">Enrollment No:</label>
       <input type="text" id="enrollmentNo" name="enrollmentNo" required pattern="[0-9]{12}" title="Enrollment number must be 12 digits long">
 
-      <label for="password">Password:</label>
-      <div class="password-wrapper">
-        <input type="password" id="password" name="password">
-        <button type="button" id="toggle-password">Show Password</button>
+      <!-- <label for="password">Password:</label> -->
+      <div class="password-container">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" pattern=".{8,10}" required>
+        <i class="fa-solid fa-eye" id="eye"></i>
       </div>
       <br>
-      <button type="submit">Login</button>
+      
+      <div id="submit-button">
+        <input type="submit" class="submit-button" value="Login">
+      </div>
+      <!-- <button type="submit">Login</button> -->
     </form>
-    <div class="status-message"><a href="/register">Don't have an account? Register now!</a></div>
-    
+    <div class="status-message"><a href="/register" style="color: #f6f6f6;">Don't have an account? Register now!</a></div>
+    <script src="js/validate.js"></script>
 
-    <script>
-      const password = document.getElementById("password");
-      const togglePasswordButton = document.getElementById("toggle-password");
-    
-      function togglePasswordVisibility() {
-        if (password.type === "password") {
-          password.type = "text";
-          togglePasswordButton.textContent = "Hide Password";
-        } else {
-          password.type = "password";
-          togglePasswordButton.textContent = "Show Password";
-        }
-      }
-    
-      togglePasswordButton.addEventListener("click", togglePasswordVisibility);
-    </script>
+  
     
   </body>
 </html>
