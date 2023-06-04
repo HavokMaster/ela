@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 const app = express();
 const port = 3000;
 const { Note, QuestionPaper, QuestionBank, MockTest} = require('./models');
@@ -22,7 +23,7 @@ app.use('/uploads', express.static(__dirname + '/uploads'));
 // Use body-parser middleware to parse form data
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Define the schema for your collection
+// Define the schema
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   userId: { type: String, required: true },
@@ -31,10 +32,16 @@ const userSchema = new mongoose.Schema({
   branch: { type: String, required: true },
   userType: { type: String, enum: ['student', 'admin'], required: true }
 });
+const pendingUserSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  userId: { type: String, required: true },
+  branch: { type: String, required: true },
+  semester: { type: Number, required: false },
+  userType: { type: String, enum: ['student', 'admin'], required: true }
+});
 
-// Create a model for your collection
 const User = mongoose.model('User', userSchema);
-
+const PendingUser = mongoose.model('PendingUser', pendingUserSchema);
 // Connect to your MongoDB database
 mongoose.connect('mongodb://127.0.0.1:27017/ela', {
   useNewUrlParser: true,
@@ -76,6 +83,31 @@ app.get('/upload', (req, res) => {
   }
   res.render('upload');
 });
+
+//Render the management page
+app.get('/manage-users', async (req, res) => {
+  const user = req.session.user;
+
+  if (!user) {
+    res.redirect('/');
+    return;
+  }
+  if(user.userType != "admin"){
+    res.redirect("/dashboard")
+    return;
+  }
+  try {
+    // Fetch the existing users from the database
+    const existingUsers = await User.find();
+    const pendingUsers = await PendingUser.find();
+    // Render the manage.ejs file and pass the existingUsers array as a variable
+    res.render('manage', { existingUsers, pendingUsers, currentUser: user.userId});
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
 //Render the dashboard
 app.get('/dashboard', (req, res) => {
   const user = req.session.user;
@@ -263,38 +295,47 @@ app.post('/register', (req, res) => {
     return res.render('login.ejs', { msg: 'Invalid user type' });
   }
 
-  // Check if user with the same user ID already exists
-  User.findOne({ userId })
-    .then((user) => {
-      if (user) {
-        return res.render('login.ejs', { msg: 'User with the same User ID already exists' });
+  // Check if user with the same user ID already exists in the pending users
+  PendingUser.findOne({ userId })
+    .then((pendingUser) => {
+      if (pendingUser) {
+        return res.render('login.ejs', { msg: 'User ID already pending for approval!' });
       }
 
-      // Create a new user document based on the user type
-      let newUser;
-      if (userType === 'admin') {
-        newUser = new User({ name, userId, password, branch, userType });
-      } else if (userType === 'student') {
-        newUser = new User({ name, userId, password, branch, userType, semester });
-      }
+      // Check if user with the same user ID already exists in the users collection
+      User.findOne({ userId })
+        .then((existingUser) => {
+          if (existingUser) {
+            return res.render('login.ejs', { msg: 'User with the same User ID already exists' });
+          }
 
-      // Hash the password before saving to the database
-      bcrypt.hash(password, 10)
-        .then((hashedPassword) => {
-          newUser.password = hashedPassword;
-          return newUser.save();
-        })
-        .then(() => {
-          res.render('login.ejs', { sucmsg: 'Registration Successful!' });
+          // Create a new pending user document based on the user type
+          let newPendingUser;
+          if (userType === 'admin') {
+            newPendingUser = new PendingUser({ name, userId, branch, userType });
+          } else if (userType === 'student') {
+            newPendingUser = new PendingUser({ name, userId, branch, userType, semester });
+          }
+
+          // Save the pending user to the database
+          newPendingUser.save()
+            .then(() => {
+              res.render('login.ejs', { sucmsg: 'Registration Successful! Your account is pending approval.' });
+            })
+            .catch((error) => {
+              res.render('register.ejs', { msg: 'Error registering user: ' + error.message });
+            });
         })
         .catch((error) => {
-          res.render('register.ejs', { msg: 'Error registering user: ' + error.message });
+          res.render('register.ejs', { msg: 'Error checking for existing user in users collection: ' + error.message });
         });
     })
     .catch((error) => {
-      res.render('register.ejs', { msg: 'Error checking for existing user: ' + error.message });
+      res.render('register.ejs', { msg: 'Error checking for existing user in pending users collection: ' + error.message });
     });
 });
+
+
 
 
   
@@ -400,8 +441,176 @@ app.post('/upload', upload.single('file'), (req, res, next) => {
   }
 });
 
+//Remove Notes
+app.post('/remove-note', async (req, res) => {
+  const notesUrl = req.body.notesUrl;
+  try {
+    // Retrieve the note from the database using the notesUrl
+    const note = await Note.findOne({ notesUrl: notesUrl });
+    if (!note) {
+      return res.status(404).send('Note not found');
+    }
 
+    // Delete the associated file
+    const filePath = __dirname + note.notesUrl;
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.error(err);
+      }
+    });
 
+    // Remove the note from the database
+    await note.deleteOne();
+
+    res.redirect('back');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+// Remove Question Bank
+app.post('/remove-questionbank', async (req, res) => {
+  const questionBankUrl = req.body.questionBankUrl;
+  try {
+    // Retrieve the question bank from the database using the questionBankUrl
+    const questionBank = await QuestionBank.findOne({ questionBankUrl: questionBankUrl });
+    if (!questionBank) {
+      return res.status(404).send('Question bank not found');
+    }
+
+    // Delete the associated file
+    const filePath = __dirname + questionBank.questionBankUrl;
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.error(err);
+      }
+    });
+
+    // Remove the question bank from the database
+    await questionBank.deleteOne();
+
+    res.redirect('back');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+// Remove Question Paper
+app.post('/remove-questionpaper', async (req, res) => {
+  const questionPaperUrl = req.body.questionPaperUrl;
+  try {
+    // Retrieve the question paper from the database using the questionPaperUrl
+    const questionPaper = await QuestionPaper.findOne({ questionPaperUrl: questionPaperUrl });
+    if (!questionPaper) {
+      return res.status(404).send('Question paper not found');
+    }
+
+    // Delete the associated file
+    const filePath = __dirname + questionPaper.questionPaperUrl;
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.error(err);
+      }
+    });
+
+    // Remove the question paper from the database
+    await questionPaper.deleteOne();
+
+    res.redirect('back');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+//Approve user registration request
+app.post('/approve-user', async (req, res) => {
+  const { userId } = req.body;
+
+  try {
+    // Retrieve the user details from the pendingUsers collection
+    const pendingUser = await PendingUser.findOne({ userId }).exec();
+
+    if (!pendingUser) {
+      console.error('Pending user not found');
+      return res.status(404).send('Pending user not found');
+    }
+
+    // Create a new user in the users collection
+    let newUser;
+    if (pendingUser.userType === 'student') {
+      newUser = new User({
+        name: pendingUser.name,
+        userId: pendingUser.userId,
+        userType: pendingUser.userType,
+        branch: pendingUser.branch,
+        semester: pendingUser.semester
+      });
+    } else {
+      newUser = new User({
+        name: pendingUser.name,
+        userId: pendingUser.userId,
+        userType: pendingUser.userType,
+        branch: pendingUser.branch,
+      });
+    }
+
+    await newUser.save();
+
+    // Remove the user from the pendingUsers collection
+    await PendingUser.deleteOne({ userId });
+    const existingUsers = await User.find();
+    const pendingUsers = await PendingUser.find();
+
+    // Send a response indicating the successful approval
+    res.redirect('/manage-users')
+  } catch (err) {
+    console.error('Error approving user:', err);
+    res.redirect('/manage-users')
+  }
+});
+
+// Reject User Registration request
+app.post('/reject-user', async (req, res) => {
+  const { userId } = req.body;
+
+  try {
+    // Find the pending user in the database
+    const pendingUser = await PendingUser.findOne({ userId });
+    if (!pendingUser) {
+      return res.status(404).send('Pending user not found');
+    }
+
+    // Remove the pending user from the database
+    await pendingUser.deleteOne();
+
+    res.redirect('/manage-users');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Internal Server Error');
+  }
+});
+//Remove Users
+app.post('/remove-user', async (req, res) => {
+  const userId = req.body.userId;
+  try {
+    // Find the user in the database
+    const user = await User.findOne({ userId: userId });
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
+    // Remove the user from the database
+    await user.deleteOne();
+
+    res.redirect('/manage-users');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Internal Server Error');
+  }
+});
 
 // Start the server
 app.listen(port, () => {

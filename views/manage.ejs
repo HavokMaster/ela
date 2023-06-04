@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Manage Users</title>
+    <link rel="stylesheet" href="/css/style2.css">
+    <style>
+      .highlight {
+        background-color: orange;
+        color: azure;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Manage Users</h1>
+    <% if (locals.msg) { %>
+        <div class="status-message error"><%= locals.msg %></div>
+      <% } %>
+      <% if (locals.sucmsg) { %>
+        <div class="status-message success"><%= locals.sucmsg %></div>
+      <% } %>
+    <% var pendingStudents = pendingUsers.filter(user => user.userType === 'student'); %>
+    <% if (pendingStudents && pendingStudents.length > 0) { %>
+      <h2>Pending Students</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>User ID</th>
+            <th>Branch</th>
+            <th>Semester</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% pendingStudents.forEach(function(user) { %>
+            <tr>
+              <td><%= user.name %></td>
+              <td><%= user.userId %></td>
+              <td><%= user.branch %></td>
+              <td><%= user.semester %></td>
+              <td>
+                <form method="POST" action="/approve-user">
+                  <input type="hidden" name="userId" value="<%= user.userId %>">
+                  <button onclick="confirmAction(event, 'Approve the user?')">Approve</button>
+                </form>
+                <form method="POST" action="/reject-user">
+                  <input type="hidden" name="userId" value="<%= user.userId %>">
+                  <button onclick="confirmAction(event, 'Reject the user?')">Reject</button>
+                </form>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    <% } %>
+
+    <% var pendingAdmins = pendingUsers.filter(user => user.userType === 'admin'); %>
+    <% if (pendingAdmins && pendingAdmins.length > 0) { %>
+      <h2>Pending Admins</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>User ID</th>
+            <th>Branch</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% pendingAdmins.forEach(function(user) { %>
+            <tr>
+              <td><%= user.name %></td>
+              <td><%= user.userId %></td>
+              <td><%= user.branch %></td>
+              <td>
+                <form method="POST" action="/approve-user">
+                  <input type="hidden" name="userId" value="<%= user.userId %>">
+                  <button onclick="confirmAction(event, 'Approve the user?')">Approve</button>
+                </form>
+                <form method="POST" action="/reject-user">
+                  <input type="hidden" name="userId" value="<%= user.userId %>">
+                  <button onclick="confirmAction(event, 'Reject the user?')">Reject</button>
+                </form>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    <% } %>
+
+    <% var existingStudents = existingUsers.filter(user => user.userType === 'student'); %>
+    <% if (existingStudents && existingStudents.length > 0) { %>
+      <h2>Existing Students</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>User ID</th>
+            <th>Branch</th>
+            <th>Semester</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% existingStudents.forEach(function(user) { %>
+            <tr>
+              <td <% if (currentUser === user.userId) { %> class="highlight" <% } %> ><%= user.name %></td>
+              <td <% if (currentUser === user.userId) { %> class="highlight" <% } %> ><%= user.userId %></td>
+              <td <% if (currentUser === user.userId) { %> class="highlight" <% } %> ><%= user.branch %></td>
+              <td <% if (currentUser === user.userId) { %> class="highlight" <% } %> ><%= user.semester %></td>
+              <td>
+                <% if (currentUser === user.userId) { %>
+                  <button disabled>Remove</button>
+                <% } else { %>
+                  <form method="POST" action="/remove-user">
+                    <input type="hidden" name="userId" value="<%= user.userId %>">
+                    <button onclick="confirmAction(event, 'Remove the user?')">Remove</button>
+                  </form>
+                <% } %>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    <% } %>
+
+    <% var existingAdmins = existingUsers.filter(user => user.userType === 'admin'); %>
+    <% if (existingAdmins && existingAdmins.length > 0) { %>
+      <h2>Existing Admins</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>User ID</th>
+            <th>Branch</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% existingAdmins.forEach(function(user) { %>
+            <tr>
+              <td <% if (currentUser === user.userId) { %> class="highlight" <% } %> ><%= user.name %></td>
+              <td <% if (currentUser === user.userId) { %> class="highlight" <% } %> ><%= user.userId %></td>
+              <td <% if (currentUser === user.userId) { %> class="highlight" <% } %> ><%= user.branch %></td>
+              <td>
+                <% if (currentUser === user.userId) { %>
+                  <button disabled>Remove</button>
+                <% } else { %>
+                  <form method="POST" action="/remove-user">
+                    <input type="hidden" name="userId" value="<%= user.userId %>">
+                    <button onclick="confirmAction(event, 'Remove the user?')">Remove</button>
+                  </form>
+                <% } %>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    <% } %>
+    
+    <script>
+      function confirmAction(event, message) {
+        event.preventDefault();
+        if (confirm(message)) {
+          event.target.closest('form').submit();
+        }
+      }
+    </script>
+
+    <a href="/dashboard"><input type="button" value="Back to dashboard"></a>
+  </body>
+</html>
