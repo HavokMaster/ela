@@ -9,48 +9,94 @@
   <form action="/register" method="post">
     <label for="name">Name:</label>
     <input type="text" id="name" name="name" required>
-    
-    <label for="enrollmentNo">Enrollment Number:</label>
-    <input type="text" id="enrollmentNo" name="enrollmentNo" required pattern="[0-9]{12}" title="Enrollment number must be 12 digits long">
-  
-    <label for="semester">Semester:</label>
-    <select id="semester" name="semester" required>
-      <option value="">Select Semester</option>
-      <option value="1">1st Semester</option>
-      <option value="2">2nd Semester</option>
-      <option value="3">3rd Semester</option>
-      <option value="4">4th Semester</option>
-      <option value="5">5th Semester</option>
-      <option value="6">6th Semester</option>
-      <option value="7">7th Semester</option>
-      <option value="8">8th Semester</option>
-    </select>
-  
-    <label for="branch">Branch:</label>
-    <select id="branch" name="branch" required>
-      <option value="">Select Branch</option>
-      <option value="cse">Computer Science Engineering</option>
-      <option value="it">Information Technology</option>
-    </select>
-  
+
     <label for="userType">User Type:</label>
     <select id="userType" name="userType" required>
       <option value="">-- Select User Type --</option>
       <option value="student">Student</option>
       <option value="admin">Admin</option>
     </select>
-    
+
+    <div id="userIdContainer"></div>
+    <div id="semesterContainer" style="display: none;">
+      <label for="semester">Semester:</label>
+      <select id="semester" name="semester">
+        <option value="">Select Semester</option>
+        <option value="1">1st Semester</option>
+        <option value="2">2nd Semester</option>
+        <option value="3">3rd Semester</option>
+        <option value="4">4th Semester</option>
+        <option value="5">5th Semester</option>
+        <option value="6">6th Semester</option>
+        <option value="7">7th Semester</option>
+        <option value="8">8th Semester</option>
+      </select>
+    </div>
+
+    <script>
+      const userTypeSelect = document.getElementById('userType');
+      const userIdContainer = document.getElementById('userIdContainer');
+      const semesterContainer = document.getElementById('semesterContainer');
+
+      userTypeSelect.addEventListener('change', function() {
+        const selectedUserType = userTypeSelect.value;
+        userIdContainer.innerHTML = '';
+
+        if (selectedUserType === 'admin') {
+          const userIdLabel = document.createElement('label');
+          userIdLabel.setAttribute('for', 'userId');
+          userIdLabel.textContent = 'User ID (6 digits):';
+
+          const userIdInput = document.createElement('input');
+          userIdInput.setAttribute('type', 'text');
+          userIdInput.setAttribute('id', 'userId');
+          userIdInput.setAttribute('name', 'userId');
+          userIdInput.setAttribute('required', true);
+          userIdInput.setAttribute('pattern', '[0-9]{6}');
+          userIdInput.setAttribute('title', 'User ID must be 6 digits long');
+
+          userIdContainer.appendChild(userIdLabel);
+          userIdContainer.appendChild(userIdInput);
+
+          semesterContainer.style.display = 'none';
+        } else if (selectedUserType === 'student') {
+          const userIdLabel = document.createElement('label');
+          userIdLabel.setAttribute('for', 'userId');
+          userIdLabel.textContent = 'User ID (12 digits):';
+
+          const userIdInput = document.createElement('input');
+          userIdInput.setAttribute('type', 'text');
+          userIdInput.setAttribute('id', 'userId');
+          userIdInput.setAttribute('name', 'userId');
+          userIdInput.setAttribute('required', true);
+          userIdInput.setAttribute('pattern', '[0-9]{12}');
+          userIdInput.setAttribute('title', 'User ID must be 12 digits long');
+
+          userIdContainer.appendChild(userIdLabel);
+          userIdContainer.appendChild(userIdInput);
+
+          semesterContainer.style.display = 'block';
+        }
+      });
+    </script>
+
+    <label for="branch">Branch:</label>
+    <select id="branch" name="branch" required>
+      <option value="">Select Branch</option>
+      <option value="cse">Computer Science Engineering</option>
+      <option value="it">Information Technology</option>
+    </select>
+
     <label for="password">Password (8-10 characters):</label>
     <input type="password" id="password" name="password" pattern=".{8,10}" required>
-    
+
     <label for="confirm-password">Confirm Password:</label>
     <input type="password" id="confirm-password" name="confirm-password" required>
-    
+
     <button type="button" id="toggle-password">Show password</button>
     <br><br>
-    <input type="submit" value="Register">
+    <input type="submit" name = "register" value="Register">
   </form>
   <script src="js/validate.js"></script>
-  
 </body>
 </html>

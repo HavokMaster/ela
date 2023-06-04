@@ -25,9 +25,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Define the schema for your collection
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  enrollmentNo: { type: String, required: true },
+  userId: { type: String, required: true },
   password:{type:String, require: true},
-  semester: { type: Number, required: true },
+  semester: { type: Number, required: false },
   branch: { type: String, required: true },
   userType: { type: String, enum: ['student', 'admin'], required: true }
 });
@@ -88,14 +88,21 @@ app.get('/dashboard', (req, res) => {
   res.render('dashboard', { user });
 });
 //View
+app.get('/view-notes', async (req, res)=>{
+  res.redirect('/view-notes/1');
+})
 app.get('/view-notes/:semester', async (req, res) => {
   try {
     const user = req.session.user;
+    const semester = req.params.semester;
     if (!user) {
       res.redirect('/');
       return;
     }
-    const semester = req.params.semester;
+    if(user.userType === 'student' && semester != user.semester){
+      res.redirect('/view-notes/'+ user.semester);
+      return;
+    }
     const query = {semester: semester};
     const model = mongoose.model("Note");
     const data = await model.find(query);
@@ -107,22 +114,29 @@ app.get('/view-notes/:semester', async (req, res) => {
       }
       subjects[subject].push(note);
     });
-    res.render('view-notes', {path:path, semester:semester, subjects: subjects});
+    res.render('view-notes', {path:path, semester:semester, subjects: subjects, user : user});
   } catch (err) {
     console.error(err);
     res.status(500).send('Internal Server Error');
   }
 });
 //View Question papers
+app.get('/view-questionpapers', async (req, res)=>{
+  res.redirect('/view-questionpapers/1');
+})
 app.get('/view-questionpapers/:semester', async (req, res) => {
   const user = req.session.user;
-
+  const semester = req.params.semester;
   if (!user) {
     res.redirect('/');
     return;
   }
+  if(user.userType === 'student' && semester != user.semester){
+    res.redirect('/view-questionpapers/'+ user.semester);
+    return;
+  }
   try {
-    const semester = req.params.semester;
+    
     const query = { semester: semester};
     const model = mongoose.model("QuestionPaper");
     const data = await model.find(query).exec();
@@ -135,23 +149,33 @@ app.get('/view-questionpapers/:semester', async (req, res) => {
       }
       subjects[subject].push(questionpaper);
     });
-    res.render('view-questionpapers', { path:path, semester: semester, subjects: subjects });
+    res.render('view-questionpapers', { path:path, semester: semester, subjects: subjects, user: user});
   } catch (err) {
     console.error(err);
     res.status(500).send('Internal Server Error');
   }
 });
 //View QuestionBank
+app.get('/view-questionbank', async (req, res)=>{
+  res.redirect('/view-questionbank/1');
+})
 app.get('/view-questionbank/:semester', async (req, res) => {
   const user = req.session.user;
+  const semester = req.params.semester;
+
   if (!user) {
     res.redirect('/');
     return;
   }
-  const semester = req.params.semester;
+  if(user.userType === 'student' && semester != user.semester){
+    res.redirect('/view-questionbank/'+ user.semester);
+    return;
+  }
+
+  
   try {
-    const query = {semester: semester};
-    const model = mongoose.model("QuestionBank")
+    const query = { semester: semester };
+    const model = mongoose.model("QuestionBank");
     const data = await model.find(query);
     const subjects = {};
     data.forEach((qb) => {
@@ -161,7 +185,7 @@ app.get('/view-questionbank/:semester', async (req, res) => {
       }
       subjects[subject].push(qb);
     });
-    res.render('view-questionbank', {path:path, semester: semester, subjects: subjects});
+    res.render('view-questionbank', { path: path, semester: semester, subjects: subjects, user: user});
   } catch (err) {
     console.error(err);
     return res.status(500).send('Internal Server Error');
@@ -171,14 +195,14 @@ app.get('/view-questionbank/:semester', async (req, res) => {
 
 //Handle Login form submission
 app.post('/login', (req, res) => {
-  const { enrollmentNo, password } = req.body;
+  const { userId, password } = req.body;
 
-  // Find the user with the given enrollment number
-  User.findOne({ enrollmentNo })
+  // Find the user with the given user ID
+  User.findOne({ userId })
     .then((user) => {
       if (!user) {
         // If no user is found, redirect to the login page with an error message
-        res.render('login.ejs', { msg: 'Enrollment no. not found in database!' });
+        res.render('login.ejs', { msg: 'User ID not found in database!' });
       } else {
         // Compare the password with the hash stored in the database
         console.log(user.password)
@@ -190,7 +214,7 @@ app.post('/login', (req, res) => {
               // Passwords match, store user details in session
               req.session.user = {
               name: user.name,
-              enrollmentNo: user.enrollmentNo,
+              userId: user.userId,
               semester: user.semester,
               branch: user.branch,
               userType: user.userType
@@ -203,63 +227,75 @@ app.post('/login', (req, res) => {
           
             } else {
               // If the password does not match, redirect to the login page with an error message
-              res.render('login.ejs', { msg: 'Invalid Enrollment No. or Password!' });
+              res.render('login.ejs', { msg: 'Invalid User Id or Password!' });
             }
           })
           .catch((error) => {
             // If there's an error, redirect to the login page with an error message
-            res.render('login.ejs', { msg: 'Invalid Enrollment No. or Password!' });
+            res.render('login.ejs', { msg: 'Invalid User Id or Password!' });
           });
       }
     })
     .catch((error) => {
       // If there's an error, redirect to the login page with an error message
-      res.render('login.ejs', { msg: 'Invalid Enrollment No. or Password!' });
+      res.render('login.ejs', { msg: 'Invalid User Id or Password!' });
     });
 });
 
 // Handle registration form submission
 app.post('/register', (req, res) => {
-  // Get form data from request body
-  const { name, enrollmentNo, password, semester, branch, userType } = req.body;
+  const { name, userId, password, branch, userType } = req.body;
+  let semester;
 
-  // Check if user with the same enrollment number already exists
-  User.findOne({ enrollmentNo })
+  if (userType === 'admin') {
+    if (userId.length !== 6) {
+      return res.render('login.ejs', { msg: 'User ID for admin must be 6 digits long' });
+    }
+  } else if (userType === 'student') {
+    if (!req.body.semester) {
+      return res.render('login.ejs', { msg: 'Semester is required for student registration' });
+    }
+    semester = req.body.semester;
+    if (userId.length !== 12) {
+      return res.render('login.ejs', { msg: 'User ID for student must be 12 digits long' });
+    }
+  } else {
+    return res.render('login.ejs', { msg: 'Invalid user type' });
+  }
+
+  // Check if user with the same user ID already exists
+  User.findOne({ userId })
     .then((user) => {
       if (user) {
-        // If user already exists, redirect to error page with an error message
-        res.render('login.ejs', { msg: 'Registration Failed! Enrollment No. already exists in database' });
-      } else {
-        // If user does not exist, create a new user document
-        const newUser = new User({ name, enrollmentNo, password, semester, branch, userType });
-
-        // Hash the password before saving to database
-        bcrypt.hash(password, 10, (err, hashedPassword) => {
-          if (err) {
-            // Redirect to error page with an error message
-            res.redirect('/error?msg=Registration Failed!:Error hashing password: ' + err.message);
-          } else {
-            newUser.password = hashedPassword;
-
-            // Save the user document to the database
-            newUser.save()
-              .then(() => {
-                // Redirect to success page with a success message
-                res.render('login.ejs', { sucmsg: 'Registration Successful!' });
-              })
-              .catch((error) => {
-                // Redirect to error page with an error message
-                res.redirect('/error?msg=Registration Failed!:Error registering user: ' + error.message);
-              });
-          }
-        });
+        return res.render('login.ejs', { msg: 'User with the same User ID already exists' });
       }
+
+      // Create a new user document based on the user type
+      let newUser;
+      if (userType === 'admin') {
+        newUser = new User({ name, userId, password, branch, userType });
+      } else if (userType === 'student') {
+        newUser = new User({ name, userId, password, branch, userType, semester });
+      }
+
+      // Hash the password before saving to the database
+      bcrypt.hash(password, 10)
+        .then((hashedPassword) => {
+          newUser.password = hashedPassword;
+          return newUser.save();
+        })
+        .then(() => {
+          res.render('login.ejs', { sucmsg: 'Registration Successful!' });
+        })
+        .catch((error) => {
+          res.render('register.ejs', { msg: 'Error registering user: ' + error.message });
+        });
     })
     .catch((error) => {
-      // Redirect to error page with an error message
-      res.redirect('/error?msg=Registration Failed!:Error checking for existing user: ' + error.message);
+      res.render('register.ejs', { msg: 'Error checking for existing user: ' + error.message });
     });
 });
+
 
   
   // Handle success page

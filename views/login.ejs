@@ -15,8 +15,8 @@
     
     
     <form action="/login" method="post">
-      <label for="enrollmentNo">Enrollment No:</label>
-      <input type="text" id="enrollmentNo" name="enrollmentNo" required pattern="[0-9]{12}" title="Enrollment number must be 12 digits long">
+      <label for="userId">User ID:</label>
+      <input type="text" id="userId" name="userId" required pattern="[0-9]{6}|[0-9]{12}" title="User ID must be 6 or 12 digits long">
 
       <label for="password">Password:</label>
       <div class="password-wrapper">

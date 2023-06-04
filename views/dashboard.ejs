@@ -84,8 +84,10 @@
       <% if (user) { %>
       <div class="card">
         <h2><%= user.name %></h2>
-        <p><strong>Enrollment No.:</strong> <%= user.enrollmentNo %></p>
+        <p><strong>User ID:</strong> <%= user.userId %></p>
+        <% if (user.semester) { %>
         <p><strong>Semester:</strong> <%= user.semester %></p>
+        <% } %>
         <p><strong>Branch:</strong> <%= user.branch %></p>
         <p><strong>User Type:</strong> <%= user.userType %></p>
       </div>

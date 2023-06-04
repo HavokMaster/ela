@@ -58,9 +58,42 @@
       input[type="button"]:hover {
         background-color: #3e8e41;
       }
+      .semester-box {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+     }
+
+    .semester-box button {
+      background-color: #4CAF50;
+      border: none;
+      color: #fff;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 0 5px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .semester-box button:hover {
+     background-color: #3e8e41;
+    }
     </style>
   </head>
   <body>
+    <% if (user.userType === "admin") { %>
+      <div class="semester-selection">
+        <h1>Select semester</h1>
+        <div class="semester-box">
+          <% for (let i = 1; i <= 8; i++) { %>
+            <a href="/view-notes/<%= i %>"><button><%= i %></button></a>
+          <% } %>
+        </div>
+      </div>
+    <% } %>
     <h1>Notes for Semester <%= semester %></h1>
     <% Object.keys(subjects).forEach(function(subject) { %>
       <h2><%= subject %></h2>
