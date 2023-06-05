@@ -2,10 +2,11 @@
 <html>
   <head>
     <link rel="stylesheet" href="/css/style1.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <title>Login Page</title>
   </head>
   <body>
-    <h1 class="status-message">Login Page</h1>
+    <h1 class="page-title">Login Page</h1>
     <% if (locals.msg) { %>
       <div class="status-message error"><%= locals.msg %></div>
     <% } %>
@@ -18,18 +19,21 @@
       <label for="userId">User ID:</label>
       <input type="text" id="userId" name="userId" required pattern="[0-9]{6}|[0-9]{12}" title="User ID must be 6 or 12 digits long">
 
-      <label for="password">Password:</label>
-      <div class="password-wrapper">
-        <input type="password" id="password" name="password">
-        <button type="button" id="toggle-password">Show Password</button>
+      <div class="password-container">
+        <label for="password">Password (8-10 characters):</label>
+        <input type="password" id="password" name="password" pattern=".{8,10}" required>
+        <i class="fa-solid fa-eye" id="eye"></i>
       </div>
-      <br>
-      <button type="submit">Login</button>
+      
+      <div id="submit-button">
+        <input type="submit" class="submit-button" value="Login">
+      </div>
     </form>
+    <script src="js/validate.js"></script>
     <div class="status-message"><a href="/register">Don't have an account? Register now!</a></div>
     
 
-    <script>
+    <!-- <script>
       const password = document.getElementById("password");
       const togglePasswordButton = document.getElementById("toggle-password");
     
@@ -45,6 +49,6 @@
     
       togglePasswordButton.addEventListener("click", togglePasswordVisibility);
     </script>
-    
+     -->
   </body>
 </html>

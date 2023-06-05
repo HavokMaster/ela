@@ -2,49 +2,70 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>View Question Papers</title>
+    <title>Question Papers</title>
     <link rel="stylesheet" href="/css/style2.css">
   </head>
+
   <body>
-    <% if (user.userType === "admin") { %>
-      <div class="semester-selection">
-        <h1>Select semester</h1>
-        <div class="semester-box">
-          <% for (let i = 1; i <= 8; i++) { %>
-            <a href="/view-questionpapers/<%= i %>"><button><%= i %></button></a>
-          <% } %>
-        </div>
-      </div>
-    <% } %>
-    <h1>Question Papers for Semester <%= semester %></h1>
-    <% Object.keys(subjects).forEach(function(subject) { %>
-      <h2><%= subject %></h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Question Paper</th>
-            <% if (user.userType === "admin") { %> <!-- Add this condition to display remove button for admin -->
-              <th>Actions</th>
-            <% } %>
-          </tr>
-        </thead>
-        <tbody>
-          <% subjects[subject].forEach(function(qp) { %>
-            <tr>
-              <td><a href="<%= qp.questionPaperUrl %>"><%= path.basename(qp.questionPaperUrl) %></a></td>
-              <% if (user.userType === "admin") { %> <!-- Add this condition to display remove button for admin -->
-                <td>
-                  <form method="POST" action="/remove-questionpaper">
-                    <input type="hidden" name="questionPaperUrl" value="<%= qp.questionPaperUrl %>">
-                    <input type="submit" value="Remove File" class="remove-button">
-                  </form>
-                </td>
+
+    <div class="header">
+      <h1>e-Learning Web Application</h1>
+      <p>Question Papers</p>
+    </div>
+
+    <div class="sections">
+      <div class="inside-section">
+        <% if (user.userType === "admin") { %>
+          <div class="semester-selection">
+            <div class="sem-selection"><h1>Select semester</h1></div>
+            <div class="semester-box">
+              <% for (let i = 1; i <= 8; i++) { %>
+                <a href="/view-questionpapers/<%= i %>"><button><%= i %></button></a>
               <% } %>
-            </tr>
-          <% }); %>
-        </tbody>
-      </table>
-    <% }); %>
-    <a href="/dashboard"><input type="button" value="Back to dashboard"></a>
+            </div>
+          </div>
+        <% } %>
+      </div>
+
+      <div class="inside-section">
+        <h1>Question Papers for Semester <%= semester %></h1>
+        <% Object.keys(subjects).forEach(function(subject) { %>
+          <h2><%= subject %></h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Question Paper</th>
+                <% if (user.userType === "admin") { %> <!-- Add this condition to display remove button for admin -->
+                  <th>Actions</th>
+                <% } %>
+              </tr>
+            </thead>
+            <tbody>
+              <% subjects[subject].forEach(function(qp) { %>
+                <tr>
+                  <td><a href="<%= qp.questionPaperUrl %>"><%= path.basename(qp.questionPaperUrl) %></a></td>
+                  <% if (user.userType === "admin") { %> <!-- Add this condition to display remove button for admin -->
+                    <td>
+                      <form method="POST" action="/remove-questionpaper">
+                        <input type="hidden" name="questionPaperUrl" value="<%= qp.questionPaperUrl %>">
+                        <input type="submit" value="Remove File" class="remove-button">
+                      </form>
+                    </td>
+                  <% } %>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        <% }); %>
+      </div>
+
+    </div>
+
+    
+    
+    <!-- <a href="/dashboard"><input type="button" value="Back to dashboard"></a> -->
+    <div class="backtodash">
+      <a href="/dashboard"><input type="button" class="submit-button" value="Back to dashboard"></a>
+    </div>
   </body>
 </html>
