@@ -87,7 +87,8 @@ body {
     padding: 10px;
     margin-bottom: 20px;
     border-radius: 20px;
-    border: 1px solid #142580;
+    background-color: #F0F5FF;
+    border: 1px solid #C6D5F2;
     box-shadow: 0 0 5px rgba(0,0,0,0.1);
     font-size: 16px;
   }
@@ -97,7 +98,8 @@ body {
     padding: 10px;
     margin-bottom: 20px;
     border-radius: 20px;
-    border: 1px solid #142580;
+    background-color: #F0F5FF;
+    border: 1px solid #C6D5F2;
     box-shadow: 0 0 5px rgba(0,0,0,0.1);
     font-size: 16px;
 
@@ -123,6 +125,13 @@ body {
     max-width: 500px;
     text-align: center;
     font-size: 18px;
+  }
+
+  footer{
+    margin-bottom: 0px; 
+    background-color: #142580;
+    color: #FFFFFF;
+    text-align: center;
   }
 
 

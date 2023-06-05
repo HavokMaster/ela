@@ -1,6 +1,7 @@
 body {
   margin: 0;
   padding: 0px;
+  margin-bottom: 0px;
   font-family: Arial, Helvetica, sans-serif;
   background-color: #FFFFFF;
 }
@@ -86,9 +87,7 @@ body {
   color: #FFFFFF;
 }
 
-.main {
-  padding: 20px;
-}
+
 
 /* .card {
   background-color: #f1f1f1;
@@ -122,7 +121,8 @@ body {
   border-width: 1px 1px 0px 1px;
   border-style: solid;
   border-color: #C6D5F2;
-  margin: 24px;
+  margin-left: 24px;
+  margin-top: 48px;
   margin-bottom: -4px;
   background-color:#F0F5FF;
   color: #142580;
@@ -139,4 +139,15 @@ body {
 .subpart_title{
   font-size: 20px;
   color: #000000;
+}
+
+.footertext{
+  border-radius: 20px 20px 0px 0px;
+  margin-bottom: 0px;
+  margin-top: 48px;
+  padding: 1px;
+  background-color: #142580;
+  color: #FFFFFF;
+  text-align: center;
+  box-shadow: 0px -6px 6px rgba(0, 0, 0, 0.50);
 }

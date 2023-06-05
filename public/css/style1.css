@@ -34,7 +34,6 @@ form label {
 }
 
 form input[type="text"],
-
 form input[type="password"],
 form select {
   
@@ -45,8 +44,10 @@ form select {
   margin-bottom: 20px;
   box-sizing: border-box;
   font-size: 14px;
-  color: #FFFFFF;
-  background-color: #142580;
+  color: #142580;
+  background-color: #F0F5FF;
+  border: 1px solid #C6D5F2;
+
 
 }
 
@@ -97,10 +98,10 @@ form button:hover {
 .submit-button{
 
   margin-top: 8px;
-  background-color: #FFFFFF; 
-  border: 3px solid #142580;
+  background-color: #142580; 
+  border: 3px solid #FFFFFF;
   border-radius: 20px;
-  color: #142580;
+  color: #FFFFFF;
   padding: 10px 96px;
   text-align: center;
   font-weight: bold;
@@ -111,7 +112,7 @@ form button:hover {
 .submit-button:hover {
   
   color: #FFFFFF;
-  background-color: #142580;
+  background-color: #000e5b;
 }
 
 
