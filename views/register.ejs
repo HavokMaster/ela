@@ -80,12 +80,31 @@
       });
     </script>
 
-    <label for="branch">Branch:</label>
-    <select id="branch" name="branch" required>
-      <option value="">Select Branch</option>
-      <option value="cse">Computer Science Engineering</option>
-      <option value="it">Information Technology</option>
-    </select>
+<label for="branch">Branch:</label>
+<select id="branch" name="branch" required>
+  <option value="">Select Branch</option>
+</select>
+
+<script>
+  // Array of branch objects
+  var branches = [
+    { branchName: "Computer Science Engineering", branchValue: "cse" },
+    { branchName: "Information Technology", branchValue: "it" },
+    { branchName: "Morbais", branchValue: "morb"}
+  ];
+
+  // Get the select element
+  var select = document.getElementById("branch");
+
+  // Generate options from the array
+  branches.forEach(function(branch) {
+    var option = document.createElement("option");
+    option.value = branch.branchValue;
+    option.text = branch.branchName;
+    select.appendChild(option);
+  });
+</script>
+
 
     <label for="password">Password (8-10 characters):</label>
     <input type="password" id="password" name="password" pattern=".{8,10}" required>

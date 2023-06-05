@@ -30,17 +30,17 @@
         </thead>
         <tbody>
           <% subjects[subject].forEach(function(note) { %>
-            <tr>
-              <td><a href="<%= note.notesUrl %>"><%= path.basename(note.notesUrl) %></a></td>
-              <% if (user.userType === "admin") { %> <!-- Conditionally show the remove button for admin -->
-                <td>
-                  <form method="POST" action="/remove-note">
-                    <input type="hidden" name="notesUrl" value="<%= note.notesUrl %>">
-                    <input type="submit" value="Remove File" class="remove-button">
-                  </form>
-                </td>
-              <% } %>
-            </tr>
+              <tr>
+                <td><a href="<%= note.notesUrl %>"><%= path.basename(note.notesUrl) %></a></td>
+                <% if (user.userType === "admin") { %> <!-- Conditionally show the remove button for admin -->
+                  <td>
+                    <form method="POST" action="/remove-note">
+                      <input type="hidden" name="notesUrl" value="<%= note.notesUrl %>">
+                      <input type="submit" value="Remove File" class="remove-button">
+                    </form>
+                  </td>
+                <% } %>
+              </tr>
           <% }); %>
         </tbody>
       </table>

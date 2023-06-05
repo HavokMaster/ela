@@ -3,26 +3,30 @@ const mongoose = require('mongoose');
 const noteSchema = new mongoose.Schema({
   subject: String,
   semester: Number,
-  notesUrl: String
+  notesUrl: String,
+  branch: String
 });
 
 const questionPaperSchema = new mongoose.Schema({
   subject: String,
   semester: Number,
   year: Number,
-  questionPaperUrl: String
+  questionPaperUrl: String,
+  branch: String
 });
 
 const questionBankSchema = new mongoose.Schema({
   subject: String,
   semester: Number,
-  questionBankUrl: String
+  questionBankUrl: String,
+  branch: String
 })
 
 const mockTestSchema = new mongoose.Schema({
   subject: String,
   semester: Number,
-  mockTestUrl: String
+  mockTestUrl: String,
+  branch: String
 })
 
 const Note = mongoose.model('Note', noteSchema);

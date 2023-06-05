@@ -36,6 +36,7 @@ const pendingUserSchema = new mongoose.Schema({
   name: { type: String, required: true },
   userId: { type: String, required: true },
   branch: { type: String, required: true },
+  password:{type:String, require: true},
   semester: { type: Number, required: false },
   userType: { type: String, enum: ['student', 'admin'], required: true }
 });
@@ -141,10 +142,12 @@ app.get('/view-notes/:semester', async (req, res) => {
     const subjects = {};
     data.forEach((note) => {
       const subject = note.subject;
-      if (!subjects[subject]) {
-        subjects[subject] = [];
+      if (note.branch === user.branch) {
+        if (!subjects[subject]) {
+          subjects[subject] = [];
+        }
+        subjects[subject].push(note);
       }
-      subjects[subject].push(note);
     });
     res.render('view-notes', {path:path, semester:semester, subjects: subjects, user : user});
   } catch (err) {
@@ -175,11 +178,13 @@ app.get('/view-questionpapers/:semester', async (req, res) => {
 
     const subjects = {};
     data.forEach((questionpaper) => {
-      const subject = questionpaper.subject;
+    const subject = questionpaper.subject;
+    if (questionpaper.branch === user.branch) {
       if (!subjects[subject]) {
         subjects[subject] = [];
       }
       subjects[subject].push(questionpaper);
+    }
     });
     res.render('view-questionpapers', { path:path, semester: semester, subjects: subjects, user: user});
   } catch (err) {
@@ -211,11 +216,13 @@ app.get('/view-questionbank/:semester', async (req, res) => {
     const data = await model.find(query);
     const subjects = {};
     data.forEach((qb) => {
-      const subject = qb.subject;
+    const subject = qb.subject;
+    if (qb.branch === user.branch) {
       if (!subjects[subject]) {
         subjects[subject] = [];
       }
       subjects[subject].push(qb);
+    }
     });
     res.render('view-questionbank', { path: path, semester: semester, subjects: subjects, user: user});
   } catch (err) {
@@ -274,25 +281,12 @@ app.post('/login', (req, res) => {
     });
 });
 
-// Handle registration form submission
+//Handle registration request
 app.post('/register', (req, res) => {
   const { name, userId, password, branch, userType } = req.body;
   let semester;
-
-  if (userType === 'admin') {
-    if (userId.length !== 6) {
-      return res.render('login.ejs', { msg: 'User ID for admin must be 6 digits long' });
-    }
-  } else if (userType === 'student') {
-    if (!req.body.semester) {
-      return res.render('login.ejs', { msg: 'Semester is required for student registration' });
-    }
+  if(userType === 'student'){
     semester = req.body.semester;
-    if (userId.length !== 12) {
-      return res.render('login.ejs', { msg: 'User ID for student must be 12 digits long' });
-    }
-  } else {
-    return res.render('login.ejs', { msg: 'Invalid user type' });
   }
 
   // Check if user with the same user ID already exists in the pending users
@@ -309,22 +303,29 @@ app.post('/register', (req, res) => {
             return res.render('login.ejs', { msg: 'User with the same User ID already exists' });
           }
 
-          // Create a new pending user document based on the user type
-          let newPendingUser;
-          if (userType === 'admin') {
-            newPendingUser = new PendingUser({ name, userId, branch, userType });
-          } else if (userType === 'student') {
-            newPendingUser = new PendingUser({ name, userId, branch, userType, semester });
-          }
+          // Hash the password
+          bcrypt.hash(password, 10, (err, hashedPassword) => {
+            if (err) {
+              return res.render('register.ejs', { msg: 'Error hashing password' });
+            }
 
-          // Save the pending user to the database
-          newPendingUser.save()
-            .then(() => {
-              res.render('login.ejs', { sucmsg: 'Registration Successful! Your account is pending approval.' });
-            })
-            .catch((error) => {
-              res.render('register.ejs', { msg: 'Error registering user: ' + error.message });
-            });
+            // Create a new pending user document based on the user type
+            let newPendingUser;
+            if (userType === 'admin') {
+              newPendingUser = new PendingUser({ name, userId, branch, userType, password: hashedPassword});
+            } else if (userType === 'student') {
+              newPendingUser = new PendingUser({ name, userId, branch, userType, semester, password: hashedPassword});
+            }
+
+            // Save the pending user to the database
+            newPendingUser.save()
+              .then(() => {
+                res.render('login.ejs', { sucmsg: 'Registration Successful! Your account is pending approval.' });
+              })
+              .catch((error) => {
+                res.render('register.ejs', { msg: 'Error registering user: ' + error.message });
+              });
+          });
         })
         .catch((error) => {
           res.render('register.ejs', { msg: 'Error checking for existing user in users collection: ' + error.message });
@@ -394,6 +395,7 @@ const upload = multer({ storage: storage, fileFilter: fileFilter });
 // set up route for file upload
 app.post('/upload', upload.single('file'), (req, res, next) => {
   let fileType = req.body.fileType;
+  const user = req.session.user;
   if (!fileType) {
     fileType = req.file.originalname.endsWith('.pdf') ? 'question-paper' : 'notes';
   }
@@ -413,6 +415,7 @@ app.post('/upload', upload.single('file'), (req, res, next) => {
     const data = new Note({
       subject: req.body.subject,
       semester: req.body.semester,
+      branch: user.branch,
       notesUrl: fileUrl
     });
     upload(data);
@@ -421,6 +424,7 @@ app.post('/upload', upload.single('file'), (req, res, next) => {
       subject: req.body.subject,
       semester: req.body.semester,
       year: req.body.year,
+      branch: user.branch,
       questionPaperUrl: fileUrl
     });
     upload(data);
@@ -428,6 +432,7 @@ app.post('/upload', upload.single('file'), (req, res, next) => {
     const data = new QuestionBank({
       subject: req.body.subject,
       semester: req.body.semester,
+      branch: user.branch,
       questionBankUrl: fileUrl
     });
     upload(data);
@@ -546,7 +551,8 @@ app.post('/approve-user', async (req, res) => {
         userId: pendingUser.userId,
         userType: pendingUser.userType,
         branch: pendingUser.branch,
-        semester: pendingUser.semester
+        semester: pendingUser.semester,
+        password: pendingUser.password
       });
     } else {
       newUser = new User({
@@ -554,6 +560,7 @@ app.post('/approve-user', async (req, res) => {
         userId: pendingUser.userId,
         userType: pendingUser.userType,
         branch: pendingUser.branch,
+        password: pendingUser.password
       });
     }
 
