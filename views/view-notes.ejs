@@ -14,9 +14,11 @@
       <p>View Notes</p>
     </div>
 
-    <div class="sections">
-      <div class="inside-section">
-        <% if (user.userType === "admin") { %>
+    <div class="sections"> 
+
+
+      <% if (user.userType === "admin") { %> <!-- Conditionally show the Actions column for admin -->
+        <div class="inside-section">
           <div class="semester-selection">
             <div class="sem-selection"><h1>Select semester</h1></div>
             <div class="semester-box">
@@ -25,13 +27,14 @@
               <% } %>
             </div>
           </div>
-        <% } %>
       </div>
+        
+      <% } %>
       
-  
+
       <div class="inside-section">
         <h1>Notes for Semester <%= semester %></h1>
-      <% Object.keys(subjects).forEach(function(subject) { %>
+        <% Object.keys(subjects).forEach(function(subject) { %>
         <h2><%= subject %></h2>
         <table>
           <thead>
@@ -42,6 +45,7 @@
               <% } %>
             </tr>
           </thead>
+
           <tbody>
             <% subjects[subject].forEach(function(note) { %>
                 <tr>
@@ -60,10 +64,9 @@
         </table>
       <% }); %>
       </div>
-  
+    </div> 
 
-    </div>
-        
+
     <!-- <a href="/dashboard"><input type="button" value="Back to dashboard"></a> -->
 
     <div class="backtodash">
@@ -71,3 +74,6 @@
     </div>
   </body>
 </html>
+
+
+

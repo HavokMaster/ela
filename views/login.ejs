@@ -34,7 +34,7 @@
         <input type="submit" class="submit-button" value="Login">
       </div>
     </form>
-    <script src="js/validate.js"></script>
+    <!-- <script src="js/validate.js"></script> -->
     <div class="status-message"><a href="/register">Don't have an account? Register now!</a></div>
     
 
@@ -53,7 +53,18 @@
       }
     
       togglePasswordButton.addEventListener("click", togglePasswordVisibility);
-    </script>
-     -->
+    </script> -->
+<script>
+  const passwordInput = document.querySelector("#password")
+const eye = document.querySelector("#eye")
+
+eye.addEventListener("click", function(){
+    this.classList.toggle("fa-eye-slash")
+    const type = passwordInput.getAttribute("type") === "password" ? "text" : "password"
+    passwordInput.setAttribute("type", type)
+  })
+</script>
+  
+    
   </body>
 </html>

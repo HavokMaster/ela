@@ -10,7 +10,7 @@
   <div class="header">
     <p>e-Learning Web Application</p>
   </div>
-    
+  
   <h1 class="page-title">Registration Form</h1>
   <form action="/register" method="post">
     <label for="name">Name:</label>
@@ -115,11 +115,15 @@
 <div class="password-container">
   <label for="password">Password (8-10 characters):</label>
   <input type="password" id="password" name="password" pattern=".{8,10}" required>
-  <i class="fa-solid fa-eye" id="eye"></i>
+  <i class="fa-solid fa-eye" id="toggle-password"></i>
 </div>
 
-    <label for="confirm-password">Confirm Password:</label>
-    <input type="password" id="confirm-password" name="confirm-password" required>
+<div class="password-container">
+  <label for="confirm-password">Confirm Password:</label>
+  <input type="password" id="confirm-password" name="confirm-password" required>
+  <!-- <i class="fa-solid fa-eye" id="toggle-password-2"></i> -->
+</div>
+    
 
     <!-- <button type="button" id="toggle-password">Show password</button>
     <br><br> -->
@@ -129,5 +133,7 @@
   </form>
   <script src="js/validate.js"></script>
   <div class="status-message"><a href="/login">Already have an account? Login now!</a></div>
+
+
 </body>
 </html>
