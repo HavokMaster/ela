@@ -111,10 +111,7 @@ body {
  background-color: #142580;
 }
 .sections{
-  
-  display: flex;
-  
-
+  display: grid;
   justify-content: center;
   margin: auto;
   
