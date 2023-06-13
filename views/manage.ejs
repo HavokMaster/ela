@@ -3,25 +3,38 @@
   <head>
     <meta charset="utf-8">
     <title>Manage Users</title>
-    <link rel="stylesheet" href="/css/style2.css">
+    <link rel="stylesheet" href="/css/style3.css">
     <style>
       .highlight {
-        background-color: orange;
+        background-color: #142580;
         color: azure;
       }
     </style>
+
+
   </head>
   <body>
-    <h1>Manage Users</h1>
+
+    <div class="header">
+      <h1>e-Learning Web Application</h1>
+      <p>Manage Users</p>
+    </div>
+    
+
+
     <% if (locals.msg) { %>
         <div class="status-message error"><%= locals.msg %></div>
       <% } %>
       <% if (locals.sucmsg) { %>
         <div class="status-message success"><%= locals.sucmsg %></div>
       <% } %>
-    <% var pendingStudents = pendingUsers.filter(user => user.userType === 'student'); %>
-    <% if (pendingStudents && pendingStudents.length > 0) { %>
-      <h2>Pending Students</h2>
+
+    <div class="pending-list">
+
+      <% var pendingStudents = pendingUsers.filter(user => user.userType === 'student'); %>
+      <% if (pendingStudents && pendingStudents.length > 0) { %>
+        <div class="inside-section">
+          <h2>Pending Students</h2>
       <table>
         <thead>
           <tr>
@@ -53,12 +66,16 @@
           <% }); %>
         </tbody>
       </table>
-    <% } %>
 
-    <% var pendingAdmins = pendingUsers.filter(user => user.userType === 'admin'); %>
-    <% if (pendingAdmins && pendingAdmins.length > 0) { %>
-      <h2>Pending Admins</h2>
-      <table>
+        </div>
+      
+      <% } %>
+
+      <% var pendingAdmins = pendingUsers.filter(user => user.userType === 'admin'); %>
+      <% if (pendingAdmins && pendingAdmins.length > 0) { %>
+        <div class="inside-section">
+          <h2>Pending Admins</h2>
+          <table>
         <thead>
           <tr>
             <th>Name</th>
@@ -86,13 +103,20 @@
             </tr>
           <% }); %>
         </tbody>
-      </table>
-    <% } %>
+          </table>
+      
+        </div>
+      <% } %>
+    </div>
+    
 
-    <% var existingStudents = existingUsers.filter(user => user.userType === 'student'); %>
+    
+    <div class="existing-list">
+      <% var existingStudents = existingUsers.filter(user => user.userType === 'student'); %>
     <% if (existingStudents && existingStudents.length > 0) { %>
-      <h2>Existing Students</h2>
-      <table>
+      <div class="inside-section">
+        <h2>Existing Students</h2>
+        <table>
         <thead>
           <tr>
             <th>Name</th>
@@ -122,12 +146,16 @@
             </tr>
           <% }); %>
         </tbody>
-      </table>
+        </table>
+
+      </div>
+      
     <% } %>
 
     <% var existingAdmins = existingUsers.filter(user => user.userType === 'admin'); %>
     <% if (existingAdmins && existingAdmins.length > 0) { %>
-      <h2>Existing Admins</h2>
+      <div class="inside-section">
+        <h2>Existing Admins</h2>
       <table>
         <thead>
           <tr>
@@ -157,7 +185,13 @@
           <% }); %>
         </tbody>
       </table>
+
+      </div>
+      
     <% } %>
+
+    </div>
+    
     
     <script>
       function confirmAction(event, message) {
@@ -168,6 +202,8 @@
       }
     </script>
 
-    <a href="/dashboard"><input type="button" value="Back to dashboard"></a>
+    <div class="backtodash">
+      <a href="/dashboard"><input type="button" class="submit-button" value="Back To Dashboard"></a>
+    </div>
   </body>
 </html>

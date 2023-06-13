@@ -110,7 +110,7 @@ form button:hover {
   
 }
 .submit-button{
-
+  cursor: pointer;
   margin-top: 8px;
   background-color: #142580; 
   border: 3px solid #FFFFFF;
@@ -145,5 +145,5 @@ form button:hover {
   top: 45px;
   right: 4%;
   cursor: pointer;
-  color: #FFFFFF;
+  color: #142580 ;
 }

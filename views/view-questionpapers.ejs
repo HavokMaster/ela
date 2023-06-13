@@ -14,8 +14,10 @@
     </div>
 
     <div class="sections">
-      <div class="inside-section">
-        <% if (user.userType === "admin") { %>
+
+      <% if (user.userType === "admin") { %> <!-- Conditionally show the Actions column for admin -->
+        <div class="inside-section">
+        
           <div class="semester-selection">
             <div class="sem-selection"><h1>Select semester</h1></div>
             <div class="semester-box">
@@ -24,8 +26,11 @@
               <% } %>
             </div>
           </div>
-        <% } %>
+      
       </div>
+        
+      <% } %>
+      
 
       <div class="inside-section">
         <h1>Question Papers for Semester <%= semester %></h1>

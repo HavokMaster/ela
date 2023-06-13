@@ -6,7 +6,7 @@ body {
 
 
   .submit-button{
-
+    cursor: pointer;
     margin-top: 8px;
     background-color: #142580; 
     border: 3px solid #142580;
