@@ -51,9 +51,9 @@
                 <td><a href="<%= questionbank.questionBankUrl %>"><%= path.basename(questionbank.questionBankUrl) %></a></td>
                 <% if (user.userType === "admin") { %> <!-- Conditionally show the remove button for admin -->
                   <td>
-                    <form method="POST" action="/remove-questionbank">
+                    <form id="removeForm" method="POST" action="/remove-questionbank">
                       <input type="hidden" name="questionBankUrl" value="<%= questionbank.questionBankUrl %>">
-                      <input type="submit" value="Remove File" class="remove-button">
+                      <input type="submit" value="Remove File" class="remove-button" onclick="confirmRemoval(event)">
                     </form>
                   </td>
                 <% } %>
@@ -72,5 +72,18 @@
     <div class="backtodash">
       <a href="/dashboard"><input type="button" class="submit-button" value="Back To Dashboard"></a>
     </div>
+    <script>
+      function confirmRemoval(event) {
+        event.preventDefault(); // Prevent the form from submitting immediately
+    
+        if (confirm("Are you sure you want to remove this file?")) {
+          // If the user confirms, proceed with the form submission
+          document.getElementById("removeForm").submit();
+        } else {
+          // If the user cancels, do nothing
+          return false;
+        }
+      }
+    </script>
   </body>
 </html>

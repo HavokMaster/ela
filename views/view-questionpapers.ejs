@@ -51,9 +51,9 @@
                   <td><a href="<%= qp.questionPaperUrl %>"><%= path.basename(qp.questionPaperUrl) %></a></td>
                   <% if (user.userType === "admin") { %> <!-- Add this condition to display remove button for admin -->
                     <td>
-                      <form method="POST" action="/remove-questionpaper">
+                      <form id="removeForm" method="POST" action="/remove-questionpaper">
                         <input type="hidden" name="questionPaperUrl" value="<%= qp.questionPaperUrl %>">
-                        <input type="submit" value="Remove File" class="remove-button">
+                        <input type="submit" value="Remove File" class="remove-button" onclick="confirmRemoval(event)">
                       </form>
                     </td>
                   <% } %>
@@ -72,5 +72,18 @@
     <div class="backtodash">
       <a href="/dashboard"><input type="button" class="submit-button" value="Back To Dashboard"></a>
     </div>
+    <script>
+      function confirmRemoval(event) {
+        event.preventDefault(); // Prevent the form from submitting immediately
+    
+        if (confirm("Are you sure you want to remove this file?")) {
+          // If the user confirms, proceed with the form submission
+          document.getElementById("removeForm").submit();
+        } else {
+          // If the user cancels, do nothing
+          return false;
+        }
+      }
+    </script>
   </body>
 </html>

@@ -29,10 +29,10 @@
         <div class="status-message success"><%= locals.sucmsg %></div>
       <% } %>
 
-    <div class="pending-list">
 
       <% var pendingStudents = pendingUsers.filter(user => user.userType === 'student'); %>
       <% if (pendingStudents && pendingStudents.length > 0) { %>
+        <div class="pending-list">
         <div class="inside-section">
           <h2>Pending Students</h2>
       <table>
